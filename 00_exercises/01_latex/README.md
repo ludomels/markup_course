@@ -2,4 +2,4 @@
 
 Deliverables for Markup languages and reproducible programming in statistics (202000010).
 
-
+`diff.tex` was generated using `latexdiff`.

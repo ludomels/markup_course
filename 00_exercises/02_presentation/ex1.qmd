@@ -1,0 +1,37 @@
+---
+title: "My First .qmd Presentation"
+author: 
+    - name: "Ludo Mels"
+      orcid: 0009-0001-4391-4350
+      affiliations: "Universiteit Utrecht"
+format: revealjs
+editor: source
+---
+
+## My favorite equation
+
+::: columns
+
+::: {.column width="45%"}
+
+Lovely *Poisson* distribution:
+
+$$
+\frac{\lambda^k e^{-\lambda}}{k!} \text{, where } \lambda \in (0, \infty) \text{ and } k \in \mathbb{N_0}
+$$
+
+**Fun fact**: rhymes with croissant (sort of)
+
+:::
+
+::: {.column width="45%%"}
+::: {.fragment .fade-up}
+![](/images/quaso.png){fig-align="center" height="400px"}
+:::
+:::
+
+:::
+
+## Information you MUST know about me
+
+Every time I hear the word *Poisson*, my head thinks *quaso*.

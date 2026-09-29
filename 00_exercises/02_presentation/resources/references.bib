@@ -1,0 +1,164 @@
+@article{afrabandpey2020,
+  title = {A Decision-Theoretic Approach for Model Interpretability in {{Bayesian}} Framework},
+  author = {Afrabandpey, Homayun and Peltola, Tomi and Piironen, Juho and Vehtari, Aki and Kaski, Samuel},
+  year = 2020,
+  month = sep,
+  journal = {Machine Learning},
+  volume = {109},
+  number = {9-10},
+  pages = {1855--1876},
+  issn = {0885-6125, 1573-0565},
+  doi = {10.1007/s10994-020-05901-8},
+  urldate = {2026-09-03},
+  abstract = {Abstract             A salient approach to interpretable machine learning is to restrict modeling to simple models. In the Bayesian framework, this can be pursued by restricting the model structure and prior to favor interpretable models. Fundamentally, however, interpretability is about users' preferences, not the data generation mechanism; it is more natural to formulate interpretability as a utility function. In this work, we propose an interpretability utility, which explicates the trade-off between explanation fidelity and interpretability in the Bayesian framework. The method consists of two steps. First, a reference model, possibly a black-box Bayesian predictive model which does not compromise accuracy, is fitted to the training data. Second, a proxy model from an interpretable model family that best mimics the predictive behaviour of the reference model is found by optimizing the interpretability utility function. The approach is model agnostic---neither the interpretable model nor the reference model are restricted to a certain class of models---and the optimization problem can be solved using standard tools. Through experiments on real-word data sets, using decision trees as interpretable models and Bayesian additive regression models as reference models, we show that for the same level of interpretability, our approach generates more accurate models than the alternative of restricting the prior. We also propose a systematic way to measure stability of interpretabile models constructed by different interpretability approaches and show that our proposed approach generates more stable models.},
+  langid = {english},
+  keywords = {to-read},
+  file = {/Users/ludo/Zotero/storage/6NRBA6YA/Afrabandpey e.a. - 2020 - A decision-theoretic approach for model interpretability in Bayesian framework.pdf}
+}
+
+@article{goutis1998,
+  title = {Model Choice in Generalised Linear Models: A {{Bayesian}} Approach via {{Kullback-Leibler}} Projections},
+  shorttitle = {Model Choice in Generalised Linear Models},
+  author = {Goutis, C},
+  year = 1998,
+  month = mar,
+  journal = {Biometrika},
+  volume = {85},
+  number = {1},
+  pages = {29--37},
+  issn = {0006-3444, 1464-3510},
+  doi = {10.1093/biomet/85.1.29},
+  urldate = {2026-09-03},
+  langid = {english},
+  keywords = {read}
+}
+
+@misc{hirsh2021,
+  title = {Sparsifying {{Priors}} for {{Bayesian Uncertainty Quantification}} in {{Model Discovery}}},
+  author = {Hirsh, Seth M. and {Barajas-Solano}, David A. and Kutz, J. Nathan},
+  year = 2021,
+  publisher = {arXiv},
+  doi = {10.48550/ARXIV.2107.02107},
+  urldate = {2026-09-24},
+  abstract = {We propose a probabilistic model discovery method for identifying ordinary differential equations (ODEs) governing the dynamics of observed multivariate data. Our method is based on the sparse identification of nonlinear dynamics (SINDy) framework, in which target ODE models are expressed as a sparse linear combinations of pre-specified candidate functions. Promoting parsimony through sparsity in SINDy leads to interpretable models that generalize to unknown data. Instead of targeting point estimates of the SINDy (linear combination) coefficients, in this work we estimate these coefficients via sparse Bayesian inference. The resulting method, uncertainty quantification SINDy (UQ-SINDy), quantifies not only the uncertainty in the values of the SINDy coefficients due to observation errors and limited data, but also the probability of inclusion of each candidate function in the linear combination. UQ-SINDy promotes robustness against observation noise and limited data, interpretability (in terms of model selection and inclusion probabilities), and generalization capacity for out-of-sample forecast. Sparse inference for UQ-SINDy employs Markov Chain Monte Carlo, and we explore two sparsifying priors: the spike-and-slab prior, and the regularized horseshoe prior. We apply UQ-SINDy to synthetic nonlinear data sets from a Lotka-Volterra model and a nonlinear oscillator, and to a real-world data set of lynx and hare populations. We find that UQ-SINDy is able to discover accurate and meaningful models even in the presence of noise and limited data samples.},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+
+@article{mclatchie2025,
+  title = {Advances in {{Projection Predictive Inference}}},
+  author = {McLatchie, Yann and R{\"o}gnvaldsson, S{\"o}lvi and Weber, Frank and Vehtari, Aki},
+  year = 2025,
+  month = jan,
+  journal = {Statistical Science},
+  volume = {40},
+  number = {1},
+  issn = {0883-4237},
+  doi = {10.1214/24-STS949},
+  urldate = {2026-09-10},
+  keywords = {read,to-annotate},
+  file = {/Users/ludo/Zotero/storage/9BZ3HEUP/McLatchie e.a. - 2025 - Advances in Projection Predictive Inference.pdf}
+}
+
+@article{pavone2023,
+  title = {Using Reference Models in Variable Selection},
+  author = {Pavone, Federico and Piironen, Juho and B{\"u}rkner, Paul-Christian and Vehtari, Aki},
+  year = 2023,
+  month = mar,
+  journal = {Computational Statistics},
+  volume = {38},
+  number = {1},
+  pages = {349--371},
+  issn = {0943-4062, 1613-9658},
+  doi = {10.1007/s00180-022-01231-6},
+  urldate = {2026-09-03},
+  abstract = {Abstract             Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability, leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model, leading to projection predictive variable selection approach. We analyse how much the great performance of the projection predictive variable is due to the use of reference model and show that other variable selection methods can also be greatly improved by using the reference model as target instead of the original data. In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection.},
+  langid = {english},
+  keywords = {to-read},
+  file = {/Users/ludo/Zotero/storage/LNJNPVKU/Pavone e.a. - 2023 - Using reference models in variable selection.pdf}
+}
+
+@article{piironen2017,
+  title = {Comparison of {{Bayesian}} Predictive Methods for Model Selection},
+  author = {Piironen, Juho and Vehtari, Aki},
+  year = 2017,
+  month = may,
+  journal = {Statistics and Computing},
+  volume = {27},
+  number = {3},
+  pages = {711--735},
+  issn = {0960-3174, 1573-1375},
+  doi = {10.1007/s11222-016-9649-y},
+  urldate = {2026-09-03},
+  langid = {english},
+  keywords = {reading},
+  file = {/Users/ludo/Zotero/storage/KSE3VH7V/Piironen en Vehtari - 2017 - Comparison of Bayesian predictive methods for model selection.pdf}
+}
+
+@article{piironen2020,
+  title = {Projective Inference in High-Dimensional Problems: {{Prediction}} and Feature Selection},
+  shorttitle = {Projective Inference in High-Dimensional Problems},
+  author = {Piironen, Juho and Paasiniemi, Markus and Vehtari, Aki},
+  year = 2020,
+  month = jan,
+  journal = {Electronic Journal of Statistics},
+  volume = {14},
+  number = {1},
+  issn = {1935-7524},
+  doi = {10.1214/20-EJS1711},
+  urldate = {2026-09-03},
+  keywords = {to-read},
+  file = {/Users/ludo/Zotero/storage/45AJAWXS/Piironen e.a. - 2020 - Projective inference in high-dimensional problems Prediction and feature selection.pdf}
+}
+
+@misc{rudin2019,
+  title = {Stop {{Explaining Black Box Machine Learning Models}} for {{High Stakes Decisions}} and {{Use Interpretable Models Instead}}},
+  author = {Rudin, Cynthia},
+  year = 2019,
+  month = sep,
+  number = {arXiv:1811.10154},
+  eprint = {1811.10154},
+  primaryclass = {stat.ML},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.1811.10154},
+  urldate = {2026-09-03},
+  abstract = {Black box machine learning models are currently being used for high stakes decision-making throughout society, causing problems throughout healthcare, criminal justice, and in other domains. People have hoped that creating methods for explaining these black box models will alleviate some of these problems, but trying to \textbackslash textit\textbraceleft explain\textbraceright{} black box models, rather than creating models that are \textbackslash textit\textbraceleft interpretable\textbraceright{} in the first place, is likely to perpetuate bad practices and can potentially cause catastrophic harm to society. There is a way forward -- it is to design models that are inherently interpretable. This manuscript clarifies the chasm between explaining black boxes and using inherently interpretable models, outlines several key reasons why explainable black boxes should be avoided in high-stakes decisions, identifies challenges to interpretable machine learning, and provides several example applications where interpretable models could potentially replace black box models in criminal justice, healthcare, and computer vision.},
+  archiveprefix = {arXiv},
+  keywords = {read},
+  file = {/Users/ludo/Zotero/storage/K7IA48BG/Rudin - 2019 - Stop Explaining Black Box Machine Learning Models for High Stakes Decisions and Use Interpretable Mo.pdf;/Users/ludo/Zotero/storage/B4TPDPNC/1811.html}
+}
+
+@article{rudin2024,
+  title = {Amazing {{Things Come From Having Many Good Models}}},
+  author = {Rudin, Cynthia and Zhong, Chudi and Semenova, Lesia and Seltzer, Margo and Parr, Ronald and Liu, Jiachang and Katta, Srikar and Donnelly, Jon and Chen, Harry and Boner, Zachery},
+  year = 2024,
+  publisher = {arXiv},
+  doi = {10.48550/ARXIV.2407.04846},
+  urldate = {2026-09-03},
+  abstract = {The Rashomon Effect, coined by Leo Breiman, describes the phenomenon that there exist many equally good predictive models for the same dataset. This phenomenon happens for many real datasets and when it does, it sparks both magic and consternation, but mostly magic. In light of the Rashomon Effect, this perspective piece proposes reshaping the way we think about machine learning, particularly for tabular data problems in the nondeterministic (noisy) setting. We address how the Rashomon Effect impacts (1) the existence of simple-yet-accurate models, (2) flexibility to address user preferences, such as fairness and monotonicity, without losing performance, (3) uncertainty in predictions, fairness, and explanations, (4) reliable variable importance, (5) algorithm choice, specifically, providing advanced knowledge of which algorithms might be suitable for a given problem, and (6) public policy. We also discuss a theory of when the Rashomon Effect occurs and why. Our goal is to illustrate how the Rashomon Effect can have a massive impact on the use of machine learning for complex problems in society.},
+  copyright = {Creative Commons Attribution Share Alike 4.0 International},
+  keywords = {read}
+}
+
+@article{vanerp2019,
+  title = {Shrinkage Priors for {{Bayesian}} Penalized Regression},
+  author = {Van Erp, Sara and Oberski, Daniel L. and Mulder, Joris},
+  year = 2019,
+  month = apr,
+  journal = {Journal of Mathematical Psychology},
+  volume = {89},
+  pages = {31--50},
+  issn = {00222496},
+  doi = {10.1016/j.jmp.2018.12.004},
+  urldate = {2026-09-23},
+  langid = {english},
+  keywords = {to-read}
+}
+
+@article{zotero-item-15,
+  title = {Fitting the Fit, Variable Selection Using Surrogate Models and Decision Analysis, a Brief Introduction and Tutorial},
+  author = {{Carlos Carvalho} and {Richard P. Hahn} and {Robert McCulloch}},
+  year = 2020,
+  month = apr,
+  abstract = {This paper describes a practical procedure for Bayesian variable selection in non- linear regression and classification models. A first stage model is fit in which all variables are included. Typically, this first stage will not include the prior belief that only a small subset of variables is needed, but it may. Given this first stage fit, we look for functions of variable subsets which approximate the predictions from the first stage fit well. A computationally efficient surrogate model is used to search for approximating functions which depend on low numbers of predictors. Rather than assuming there is some true sparcity, we seek sparse approximations to the non-sparse truth. In the case that our first stage fit involves a Bayesian assessement of the uncertainty, we use this to gauge the uncertainty of our approximation error. If we learn that, with high probability, we can obtain a good approximation to the non-sparse truth using a subset of the variables, we deem that subset to be of inter- est. We demonstrate the procedure in empirical examples involving prediction and classification and simulated examples.},
+  keywords = {to-read}
+}

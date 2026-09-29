@@ -1,23 +1,250 @@
 ---
-title: "My First .qmd Presentation"
+title: "Optimizing Projection Predictive Variable selection"
 author: 
-    - name: "Ludo Mels"
-      orcid: 0009-0001-4391-4350
-      affiliations: "Universiteit Utrecht"
-format: revealjs
-editor: source
+    name: "Ludo Mels"
+    orcid: 0009-0001-4391-4350
+    affiliations: "Universiteit Utrecht"
+date: today
+bibliography: resources/references.bib
+format: 
+    revealjs:
+        embed-resources: true
+        logo: resources/logo_uu.png
+        footer: "Optimizing projpred | [Ludo Mels]"
+execute:
+    echo: true
+    include: true
+
 ---
 
+## Introduction
 
-a logo
-a centered still figure
-an interactive table
-a moving figure, interactive figure or movie
-a 2-column slide
-an aligned multi-row equation
-a citation and reference list
-a bibliographic reference
-R code, displayed but not executed
-cached and labeled R code (may overlap with the next requirement)
-R code, executed, but not displayed (e.g. a figure generation)
-an renv reproducible environment
+```{r}
+#| label: setup
+#| include: false
+
+library(rstanarm)
+
+# Load data
+data("df_gaussian", package = "projpred")
+dat_gauss <- data.frame(y = df_gaussian$y, df_gaussian$x)
+
+```
+
+```{r}
+#| label: prep_prior
+#| include: false
+
+# Number of regression coefficients:
+( D <- sum(grepl("^X", names(dat_gauss))) )
+
+# Prior guess for the number of relevant (i.e., non-zero) regression coefficients:
+p0 <- 5
+
+# Number of observations:
+N <- nrow(dat_gauss)
+
+# Hyperprior scale for tau, the global shrinkage parameter (note that for the Gaussian family, 'rstanarm' will automatically scale this by the residual standard deviation):
+tau0 <- p0 / (D - p0) * 1 / sqrt(N)
+```
+
+*Projection predictive variable selection* (projpred) is a predictive model selection method.
+
+Two steps [@piironen2020, p. 2156]:
+
+1. **Reference model**: "*Construct the best predictive model you can*"
+2. **Minimal subset**: "*Find a simpler model that gives similar predictions as the reference model*"
+
+**Projection** [@mclatchie2025]: "*we fit smaller models to the fit of the reference model*"
+
+## Setup
+
+::: {.columns}
+
+::: {.column}
+
+This document follows the vignette about the `projpred` package. See: [projpred: Projection predictive feature selection](https://mc-stan.org/projpred/articles/projpred.html).
+
+:::
+
+::: {.column}
+
+For the first part, only `rstanarm` is needed. Load using:
+
+```r
+library(rstanarm)
+```
+
+Ensure that you set the hyperprior scale for tau (i.e., here `tau0`)
+
+:::
+
+:::
+
+## Fit a reference model
+
+Fit a Bayesian reference model using parallel processing.
+
+```{r}
+#| label: fit_reference_mod
+#| cache: true
+
+# Set this manually if desired:
+ncores <- parallel::detectCores(logical = FALSE)
+options(mc.cores = ncores)
+
+set.seed(50780)
+
+# Fit reference model
+refm_fit <- stan_glm(
+  y ~ .,
+  family = gaussian(),
+  data = dat_gauss,
+  prior = hs(global_scale = tau0),
+  chains = 2, iter = 1000,
+  refresh = 0
+) |> suppressMessages()
+```
+
+## Projpred
+
+Now, load the `projpred` package by:
+
+```{r}
+#| label: load_projpred
+
+# Load projpred package
+library(projpred)
+```
+
+## Search result
+
+Now, you create a reference model object with `get_refmodel` and perform a search through the model space.
+
+```{r}
+#| label: ref_model_obj
+
+refm_obj <- get_refmodel(refm_fit)
+```
+
+```{r}
+#| label: final_model
+
+# Refit the reference model K times:
+cv_fits <- run_cvfun(
+  refm_obj,
+  K = 5
+)
+
+# Final cv_varsel() run:
+cvvs <- cv_varsel(
+  refm_obj,
+  cv_method = "kfold",
+  cvfits = cv_fits,
+  method = "L1",
+  nclusters_pred = 20,
+  nterms_max = 9,          # determined in preliminary results
+  parallel = FALSE,
+  verbose = 0 
+)
+
+```
+
+## Plot summary
+
+```{r}
+#| label: final_model_plot
+#| echo: false
+
+options(projpred.plot_vsel_size_position = "primary_x_bottom")
+options(projpred.plot_vsel_text_angle = 0)
+options(projpred.plot_vsel_show_cv_proportions = TRUE)
+
+plot(
+  cvvs, 
+  stats = "mlpd", 
+  deltas = TRUE   # performance statistics are plotted on difference scale (differences from the BL model)
+  )
+```
+
+## Table summary
+
+```{r}
+#| label: final_model_table
+#| echo: false
+
+smmry <- summary(
+  cvvs,
+  stats = "mlpd",  # performance metric
+  type = c("mean", "lower", "upper"),
+  deltas = TRUE
+  )
+
+```
+
+```{r}
+#| label: interactive_table
+#| echo: false
+
+# Use package DT for interactive tables
+library(DT)
+
+smmry$perf_sub |> 
+    datatable(options = list(pageLength = 25, digits = 3)) |> 
+    formatRound(columns = names(smmry$perf_sub)[sapply(smmry$perf_sub, is.numeric)], digits = 3)
+```
+
+
+## The process can take some time
+
+![](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXBnMGZtMTc5d3dqdWd5MXNxZTNvMTcyanM0cW9rcmU1b3JvbDkxZSZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/G6TgcESZt8FFk8XV7K/giphy.gif)
+
+
+## The math {#sec-math}
+
+@piironen2020 (p. 2166) states that the discrepancy between the induced predictive distribution is defined as
+
+$$
+\begin{align}
+\mathrm{KL}\big(p(\tilde{y}\mid\mathcal{D}) \,\|\, q(\tilde{y})\big)
+&= \mathrm{E}_{\tilde{y}}\big(\log p(\tilde{y}\mid\mathcal{D}) - \log q(\tilde{y})\big) \nonumber \\
+&= -\mathrm{E}_{\tilde{y}}\big(\log q(\tilde{y})\big) + \text{const.} \nonumber \\
+&= -\mathrm{E}_{\tilde{y}}\big(\log \mathrm{E}_{\boldsymbol{\theta}}\big(p(\tilde{y}\mid\boldsymbol{\theta})\big)\big) + \text{const.} \nonumber \\
+&= -\mathrm{E}_{\boldsymbol{\theta}_*}\Big(\mathrm{E}_{\tilde{y}\mid\boldsymbol{\theta}_*}\big(\log \mathrm{E}_{\boldsymbol{\theta}}\big(p(\tilde{y}\mid\boldsymbol{\theta})\big)\big)\Big) + \text{const, }
+\end{align}
+$$
+
+although projection using *pointwise mapping* is used more often in practice.
+
+## References
+
+:::{#refs}
+:::
+
+## Disclaimer
+
+::: {.callout-note}
+
+Note that this presentation was created as part of the course [Markup Languages and Reproducible Programming in Statistics](https://mlarpis.github.io/markup/). The key purpose of this presentation was to experiment with `.qmd` files as a markup format. Do not use any of the content.
+
+Generative AI was used for copying the $\LaTeX$ equation from @piironen2020 (p. 2166) in @sec-math, which corresponds to the AI index stated in the [course manual](https://mlarpis.github.io/markup/genai.html).
+
+:::
+
+<!-- 
+✅ a logo
+✅a centered still figure
+✅an interactive table 
+✅a moving figure, interactive figure or movie (gif)
+
+✅a 2-column slide
+✅an aligned multi-row equation [equation from piironen2020]
+
+✅ a citation and reference list
+✅a bibliographic reference
+
+✅R code, displayed but not executed []
+✅cached and labeled R code (may overlap with the next requirement)
+    R code, executed, but not displayed (e.g. a figure generation)
+✅ an renv reproducible environment 
+-->

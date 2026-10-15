@@ -3,3 +3,4 @@
 Deliverables for Markup languages and reproducible programming in statistics (202000010).
 
 
+URL to my PR in the old course manual: https://github.com/mlarpis/markup2020/pull/22

@@ -1,0 +1,108 @@
+---
+title: "MLARPIS: Exercise 4"
+author: "Ludo Mels"
+date: today
+format:
+    html: default
+embed-resources: true
+bibliography: references.bib
+csl: apa.csl
+---
+
+```{r}
+#| label: setup
+
+# Load penguins
+library(ggplot2)
+
+# Read data
+penguins <- read.csv("00_exercises/04_reproducibility/repr_manuscript/data/data.csv")
+
+```
+
+# Quarto
+
+Quarto (@quarto) enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+# Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{python}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{python}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+# Story
+
+## Meet Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. 
+To learn more about Quarto see [https://quarto.org]().
+
+## Meet the penguins
+
+The `penguins` data from the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) package @horst2022 contains size measurements for 
+344 penguins from three species observed on three islands in the Palmer Archipelago, Antarctica. 
+
+![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png)
+
+# Results
+
+```{r}
+#| label: plot_penguins
+#| include: false
+
+# Plot penguins
+ggplot(penguins, 
+       aes(x = `Flipper.Length..mm.`, y = `Culmen.Length..mm.`)) +
+        geom_point(aes(color = Species, shape = Species)) +
+        scale_color_manual(values = c("darkorange","purple","cyan4")) +
+        labs(
+                title = "Flipper and Culmen length",
+                subtitle = "Dimensions for penguins at Palmer Station LTER",
+                x = "Flipper length (mm)", y = "Culmen length (mm)",
+                color = "Penguin species", shape = "Penguin species"
+        ) +
+        theme_minimal()
+```
+
+# Inline code
+
+Here is an example of simple *inline code*. I can include `25 + 25` as inline code: `r 25 + 25`.
+
+```{r}
+#| label: N_gentoo
+
+N_gentoo <- penguins$Species[startsWith(penguins$Species, "Gentoo penguin")] |> length()
+```
+
+The number of Gentoo penguins is `r N_gentoo`. The fraction of Gentoo penguins in the data is `r round(N_gentoo/nrow(penguins), 3)`.
+
+# Do addition function
+
+
+```{r}
+#| label: load_do_addition
+
+# Load the do_addition function
+source("00_exercises/04_reproducibility/repr_manuscript/scripts/do_addition.R")
+```
+
+The numbers 1 and 2 should add up to three.
+
+```{r}
+#| label: perform_addition
+
+do_addition(1, 2)
+```
+
+Indeed, the do_addition function indicates that 1 + 2 = 3.

@@ -52,4 +52,10 @@ rsconnect/
 **/*.quarto_ipynb
 
 # Raw data file
-data/
+# data/
+
+# pdf documents
+*.pdf
+
+# .html documents
+*.html

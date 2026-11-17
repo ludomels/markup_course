@@ -1,12 +1,11 @@
 ---
 title: "Replicate Boulesteix et al.’s simulation study"
 date: today
-date: today
 format:
-    html: default
+    pdf: default
 embed-resources: true
-bibliography: references.bib
-csl: apa.csl
+bibliography: references/references.bib
+csl: references/apa.csl
 include: false
 ---
 

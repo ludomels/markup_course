@@ -1,0 +1,244 @@
+---
+title: "Replicate Boulesteix et al.’s simulation study"
+date: today
+format:
+    pdf: default
+embed-resources: true
+bibliography: references/references.bib
+csl: references/apa.csl
+include: false
+---
+
+# Introduction
+
+This report aims to replicate the simulation study by @Boulesteix2020. This study includes a small simulation study that investigated the impact of measurement error on the results. In order to this this, they used real medical data and assumed these data included no measurement error. Subsequently, they added measurement error to both the exposure variable (`HbA1C`) and the confounder variable (`bmi`), and refitted the model. While the supplementary materials of this study included an `R`-script, the report still lacked reproducibility. For example, it did not include information on the computational environment. 
+
+As part of the course [Markup Languages and Reproducible Programming in Statistics](https://mlarpis.github.io/markup/), this report aims to improve the reproducability of the study by @Boulesteix2020. The method's section discusses the changes made to the code syntax and the computational environment to improve the reproducibility of the report. The results provides a textual description and an interpretation of the simulation study results.
+
+# Method
+
+The core aim of this report is to improve the reproducibility of the `R` script as provided by @Boulesteix2020. First, the required packages were loaded and registered in the `renv.lock` file using the `renv` package [@renv]. Note that, since this project is part of the overall `markup_course`-repository, a base path is defined to direct the paths towards the subfolders. Also note that the reproducible environment (i.e., the `renv.lock` file) and the Quarto project are defined at the root of the project.
+
+```{r}
+#| label: setup
+
+# load packages
+library(Hmisc)
+library(mice)
+library(tidyverse)
+
+# Set base path to the sub-repository
+base <- "00_exercises/04_reproducibility/ex2/"
+
+```
+
+Besides the lack of information about the computational environment, the code provided in the supplementary materials [@Boulesteix2020] lacked readability. Several improvements have been made in terms of readability. First, pipe operators (i.e., `|>`) were introduced in appropriate places. For example, only a subset of variables were used. Instead of first loading the full data and then selecting these relevant variables, the variables were immediately extracted using the pipe operator. Second, some objects were renamed to be more informative. For example, the object `d` was changed to `dat_allcases`, and `dc` (i.e., the data including the complete cases only) was changed to `dat`, since this would be the final data used in the analyses.
+
+In addition to the improving the readability of the code, the efficiency was also improved. Note that the improvement of the code's efficiency often also results in improved readability. The following improvements have been made. First, instead of using multiple lines for merging, the data were stored as a list object and subsequently merged in one line to become one data frame. Also, the variables were renamed using the `names()`-function, instead of creating copies in the same data frame with different names. Thirdly, the old script used to perform `dat$age[d$age<18] <- NA`. Since there were no cases with age below 18, this line has been removed. Also note that that line of code only removes the age for these respondents and not their complete entry, which is remarkable.
+
+In some cases, extra objects were defined to improve efficieny and readability. For example, the number of scenario's was used in multiple places in the script, but it had never been defined. Instead of hard-coding `dim(scenarios)[1]` each time, this script defined `n.scenarios` first. Also, the original models were fitted twice; one time for extracting the model summary and one time for extracting the confidence interval. In the new script, the model is stored in an object and the model summary and confidence intervals were requested afterwards. In another place, the number of observations `n` was defined as an object, although it was not used in the following syntax (i.e., again, the number of observations was hard-coded in these following lines).
+
+```{r}
+#| label: prep_data
+
+# read data files and extract only relevant variables
+d1 <- sasxport.get(paste0(base, "data/DEMO_I.xpt")) |> 
+    subset(select=c("seqn", "riagendr","ridageyr"))
+d2 <- sasxport.get(paste0(base, "data/BPX_I.xpt")) |> 
+    subset(select=c("seqn", "bpxsy1"))
+d3 <- sasxport.get(paste0(base, "data/BMX_I.xpt")) |> 
+    subset(select=c("seqn", "bmxbmi"))
+d4 <- sasxport.get(paste0(base, "data/GHB_I.xpt")) |> 
+    subset(select=c("seqn", "lbxgh"))
+d5 <- sasxport.get(paste0(base, "data/TCHOL_I.xpt")) |> 
+    subset(select=c("seqn", "lbdtcsi"))
+
+# store data in a list
+datlist <- list(d1, d2, d3, d4, d5)
+
+# merge all data
+dat_allcases <- Reduce(function(x, y) merge(x, y, by="seqn"), datlist)
+
+# rename variables
+names(dat_allcases) <- c(
+    seqn = "seqn", 
+    riagendr = "sex", 
+    ridageyr = "age", 
+    bpxsy1 = "bp", 
+    bmxbmi = "bmi", 
+    lbxgh = "HbA1C", 
+    lbdtcsi = "chol")
+
+# select complete cases:
+dat <- subset(dat_allcases, select = c("age","sex","bmi","HbA1C","bp")) |> cc()
+
+# convert sex to factor
+dat$sex <- factor(dat$sex)
+
+```
+
+converted sex to factor outside the models
+
+```{r}
+#| label: analysis
+
+# Model 1
+mod1 <- lm(bp ~ HbA1C + age + sex, data = dat)
+
+# summarize model 1
+summary(mod1)
+confint(mod1)
+
+# Model 2 (including bmi)
+mod2 <- lm(bp ~ HbA1C + bmi + age + sex, data = dat)
+
+# summarize model 2
+summary(mod2)
+confint(mod2)
+
+```
+
+The for-loop used in the simulation study was partially redesigned. First of all, the seed was included in the loop. Because the seed was repeated at each iteration, the randomness of the process was disturbed. Second, to meet conventions, `i` and `j` were used as indices for the rows and columns of the results-matrix, respectively. Finally, instead of printing the iteration number at the start of each loop, the progress was mentioned as a pecentage for each 100 iterations. 
+
+```{r}
+#| label: simularion_measurement_error
+
+# estimated HbA1C coefficient
+ref <- lm(bp ~ HbA1C + bmi + age + sex, data = dat)$coef[2]
+
+# number of iterations per scenario
+n.sim <- 1000
+
+# define measurement error to be injected
+perc.me.exp <- seq(0, 0.5, 0.1)
+perc.me.conf<- seq(0, 0.5, 0.1)
+
+# create a grid of the scenario's
+scenarios <- expand.grid(
+    perc.me.exp,
+    perc.me.conf
+    )
+
+# number of scenario's
+n.scenarios <- dim(scenarios)[1]
+
+# variance of exposure and confounder variables
+var.exp <- var(dat$HbA1C)
+var.conf <- var(dat$bmi)
+
+# number of observations
+n <- dim(dat)[1]
+
+# initialize memory
+beta.hat <- matrix(ncol = n.scenarios, nrow = n.sim)
+
+# set seed
+set.seed(123)
+
+# run simulation
+for (i in 1:n.sim){
+
+    if (i %% 100 == 0) cat("\rSimulation is at", round(i/n.sim, 3)*100, "%\n")
+    if (i == n.sim) cat("\rDone")
+
+  for (j in 1:n.scenarios){
+
+    # define new variance
+    var.me.exp <- var.exp * scenarios[j,1] / (1 - scenarios[j,1])
+    var.me.conf <- var.conf * scenarios[j,2] / (1 - scenarios[j,2])
+    
+    # add measurement error to the observations
+    dat$HbA1C.me <- dat$HbA1C + rnorm(n, 0, sqrt(var.me.exp) )
+    dat$bmi.me <- dat$bmi + rnorm(n, 0, sqrt(var.me.conf) )
+    
+    # fit the linear model
+    beta.hat[i,j] <- lm(bp ~ HbA1C.me + bmi.me + age + sex, data = dat)$coef[2]
+  }}
+```
+
+Finally, to serve the results section, the model coefficients were stored as an object. This allows for direct implementation in the text. Also, instead of displaying the absolute values of the regression coeffients in the figure, the figure now displays the difference to the original coefficient. Although the colors in the original heat-map could already be interpreted as the difference to the original, it can be difficult to see exactly in which situations the difference was greatest.
+
+# Results
+
+```{r}
+#| label: tbl-model_summary
+#| include: true
+#| echo: false
+#| tbl-cap: "Summary of the original model"
+
+library(gtsummary)
+
+tbl_regression(mod2, pvalue_fun = function(x) style_pvalue(x, digits = 3)) |>
+  bold_p() |>
+  as_gt()
+
+# Store the model coeffients
+mod2_coefs <- coef(mod2)
+
+# Model coefficients for exposure and confounder variables, respectively
+HbA1C_coef <- mod2_coefs["HbA1C"] |> round(3)
+bmi_coef <- mod2_coefs["bmi"] |> round(3)
+
+```
+
+The original linear regression model is summarized in @tbl-model_summary. In the simulation study, this model is assumed to have no measurement error. In the original model, the regression coeffient for the exposure variable `HbA1C` was `r HbA1C_coef`, and the coefficient for the confounder variable was `r bmi_coef`. Both variables were significant at the level of $p < .001$.
+
+In the simulation study, measurement error was artificially added to the raw data. The results of the simulation study are summarized in @fig-simulation_res. The percentage of injected measurement error to the exposure and confounder variables are displayed on the x and y-axis, respectively. The contents of the figure reflect the averaged difference to the actual model coefficient for the exposure variable `HbA1C`. 
+
+The plot shows that the estimates are most impacted by measurement error in the exposure variable. Remarkably, if measurement error in the exposure variable is combined with measurement error in the confounder variable, the difference to the model's actual coeffient descreases. This can be explained by the fact that, while the estimated coefficient decreases when measurment error is added to the exposure variable, it actually increases when measurement error is added to the confounder variable. Thus, in situarions where variables interact (e.g., when a confounder is present), more measurement error does not necessarily result in a more biased estimate.
+
+```{r}
+#| label: fig-simulation_res
+#| include: true
+#| echo: false
+#| 
+
+# average results over iterations
+tot.mat <- cbind(scenarios, apply(beta.hat, 2, mean))
+colnames(tot.mat) <- c("me.exp", "me.conf", "estimate")
+
+# Create plot that displays the absolute difference to the actual estimate
+diff.mat <- tot.mat
+diff.mat[, "estimate"] <- (diff.mat[, "estimate"] - HbA1C_coef)
+
+fig <- ggplot(tot.mat, aes(me.exp, me.conf)) +
+  geom_tile(color="white", aes(fill = estimate)) +
+  geom_text(aes(label = round(estimate, 2))) +
+  scale_fill_gradient2(low="#D55E00",mid="white",high = "#56B4E9", midpoint=ref) +
+  labs(x=paste("% of total variance of HbA1c due to measurement error"),
+       y=paste("% of total variance of BMI due to measurement error")) +
+  coord_equal()+
+  scale_y_continuous(breaks=unique(tot.mat[,1]))+
+  scale_x_continuous(breaks=unique(tot.mat[,1]))+
+  theme(panel.background = element_rect(fill='white', colour='grey'),
+        plot.title=element_text(hjust=0),
+        axis.ticks=element_blank(),
+        axis.title=element_text(size=12),
+        axis.text=element_text(size=10),
+        legend.title=element_text(size=12),
+        legend.text=element_text(size=10))
+
+# Absolute differences
+fig2 <- ggplot(diff.mat, aes(me.exp, me.conf)) +
+  geom_tile(color="white", aes(fill = estimate)) +
+  geom_text(aes(label = round(estimate, 2))) +
+  scale_fill_gradient2(low="#D55E00",mid="white",high = "#56B4E9", midpoint=0) +
+  labs(x=paste("% of total variance of HbA1c due to measurement error"),
+       y=paste("% of total variance of BMI due to measurement error")) +
+  coord_equal()+
+  theme(panel.background = element_rect(fill='white', colour='grey'),
+        plot.title=element_text(hjust=0),
+        axis.ticks=element_blank(),
+        axis.title=element_text(size=12),
+        axis.text=element_text(size=10),
+        legend.title=element_text(size=12),
+        legend.text=element_text(size=10))
+
+fig2
+```
+
+# Conclusions
+
+The goal of this report was to improve the replicability of the simulation study conducted by @Boulesteix2020. The code provided in the original study was improved in terms of readability and efficiency. In addition, a reproducible environment was created using the `renv` package [@renv].
+
+The results were similar to the results provided by @Boulesteix2020 in substantive terms. Nevertheless, the exact estimates differed because the seed-setting was changed in the code. The original seed setting disturbed the randomness by repeating the seed-setting in the loop.

@@ -1,0 +1,409 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{anyfontsize}
+\usepackage{multirow}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Replicate Boulesteix et al.'s simulation study},
+  pdfauthor={Ludo Mels},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Replicate Boulesteix et al.'s simulation study}
+\author{Ludo Mels}
+\date{2026-11-10}
+\begin{document}
+\maketitle
+
+
+\section{Introduction}\label{introduction}
+
+This report aims to replicate the simulation study by Boulesteix et al.
+(2020). This study includes a small simulation study that investigated
+the impact of measurement error on the results. In order to this this,
+they used real medical data and assumed these data included no
+measurement error. Subsequently, they added measurement error to both
+the exposure variable (\texttt{HbA1C}) and the confounder variable
+(\texttt{bmi}), and refitted the model. While the supplementary
+materials of this study included an \texttt{R}-script, the report still
+lacked reproducibility. For example, it did not include information on
+the computational environment.
+
+As part of the course \href{https://mlarpis.github.io/markup/}{Markup
+Languages and Reproducible Programming in Statistics}, this report aims
+to improve the reproducability of the study by Boulesteix et al. (2020).
+The method's section discusses the changes made to the code syntax and
+the computational environment to improve the reproducibility of the
+report. The results provides a textual description and an interpretation
+of the simulation study results.
+
+\section{Method}\label{method}
+
+The core aim of this report is to improve the reproducibility of the
+\texttt{R} script as provided by Boulesteix et al. (2020). First, the
+required packages were loaded and registered in the \texttt{renv.lock}
+file using the \texttt{renv} package (Ushey \& Wickham, 2026). Note
+that, since this project is part of the overall
+\texttt{markup\_course}-repository, a base path is defined to direct the
+paths towards the subfolders. Also note that the reproducible
+environment (i.e., the \texttt{renv.lock} file) and the Quarto project
+are defined at the root of the project.
+
+Besides the lack of information about the computational environment, the
+code provided in the supplementary materials (Boulesteix et al., 2020)
+lacked readability. Several improvements have been made in terms of
+readability. First, pipe operators (i.e.,
+\texttt{\textbar{}\textgreater{}}) were introduced in appropriate
+places. For example, only a subset of variables were used. Instead of
+first loading the full data and then selecting these relevant variables,
+the variables were immediately extracted using the pipe operator.
+Second, some objects were renamed to be more informative. For example,
+the object \texttt{d} was changed to \texttt{dat\_allcases}, and
+\texttt{dc} (i.e., the data including the complete cases only) was
+changed to \texttt{dat}, since this would be the final data used in the
+analyses.
+
+In addition to the improving the readability of the code, the efficiency
+was also improved. Note that the improvement of the code's efficiency
+often also results in improved readability. The following improvements
+have been made. First, instead of using multiple lines for merging, the
+data were stored as a list object and subsequently merged in one line to
+become one data frame. Also, the variables were renamed using the
+\texttt{names()}-function, instead of creating copies in the same data
+frame with different names. Thirdly, the old script used to perform
+\texttt{dat\$age{[}d\$age\textless{}18{]}\ \textless{}-\ NA}. Since
+there were no cases with age below 18, this line has been removed. Also
+note that that line of code only removes the age for these respondents
+and not their complete entry, which is remarkable.
+
+In some cases, extra objects were defined to improve efficieny and
+readability. For example, the number of scenario's was used in multiple
+places in the script, but it had never been defined. Instead of
+hard-coding \texttt{dim(scenarios){[}1{]}} each time, this script
+defined \texttt{n.scenarios} first. Also, the original models were
+fitted twice; one time for extracting the model summary and one time for
+extracting the confidence interval. In the new script, the model is
+stored in an object and the model summary and confidence intervals were
+requested afterwards. In another place, the number of observations
+\texttt{n} was defined as an object, although it was not used in the
+following syntax (i.e., again, the number of observations was hard-coded
+in these following lines).
+
+converted sex to factor outside the models
+
+The for-loop used in the simulation study was partially redesigned.
+First of all, the seed was included in the loop. Because the seed was
+repeated at each iteration, the randomness of the process was disturbed.
+Second, to meet conventions, \texttt{i} and \texttt{j} were used as
+indices for the rows and columns of the results-matrix, respectively.
+Finally, instead of printing the iteration number at the start of each
+loop, the progress was mentioned as a pecentage for each 100 iterations.
+
+Finally, to serve the results section, the model coefficients were
+stored as an object. This allows for direct implementation in the text.
+Also, instead of displaying the absolute values of the regression
+coeffients in the figure, the figure now displays the difference to the
+original coefficient. Although the colors in the original heat-map could
+already be interpreted as the difference to the original, it can be
+difficult to see exactly in which situations the difference was
+greatest.
+
+\section{Results}\label{results}
+
+\begin{table}
+
+\caption{\label{tbl-model_summary}Summary of the original model}
+
+\centering{
+
+\fontsize{12.0pt}{14.0pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccc}
+\toprule
+\textbf{Characteristic} & \textbf{Beta} & \textbf{95\% CI} & \textbf{p-value} \\ 
+\midrule\addlinespace[2.5pt]
+Glycohemoglobin (\%) & 0.74 & 0.36, 1.1 & {\bfseries <0.001} \\ 
+Body Mass Index (kg/m**2) & 0.31 & 0.25, 0.37 & {\bfseries <0.001} \\ 
+Age in years at screening & 0.43 & 0.41, 0.45 & {\bfseries <0.001} \\ 
+sex &  &  &  \\ 
+    1 & — & — &  \\ 
+    2 & -3.8 & -4.5, -3.0 & {\bfseries <0.001} \\ 
+\bottomrule
+\end{tabular*}
+\begin{minipage}{\linewidth}
+\vspace{.05em}
+Abbreviation: CI = Confidence Interval\\
+\end{minipage}
+
+}
+
+\end{table}%
+
+The original linear regression model is summarized in
+Table~\ref{tbl-model_summary}. In the simulation study, this model is
+assumed to have no measurement error. In the original model, the
+regression coeffient for the exposure variable \texttt{HbA1C} was 0.736,
+and the coefficient for the confounder variable was 0.31. Both variables
+were significant at the level of \(p < .001\).
+
+In the simulation study, measurement error was artificially added to the
+raw data. The results of the simulation study are summarized in
+Figure~\ref{fig-simulation_res}. The percentage of injected measurement
+error to the exposure and confounder variables are displayed on the x
+and y-axis, respectively. The contents of the figure reflect the
+averaged difference to the actual model coefficient for the exposure
+variable \texttt{HbA1C}.
+
+The plot shows that the estimates are most impacted by measurement error
+in the exposure variable. Remarkably, if measurement error in the
+exposure variable is combined with measurement error in the confounder
+variable, the difference to the model's actual coeffient descreases.
+This can be explained by the fact that, while the estimated coefficient
+decreases when measurment error is added to the exposure variable, it
+actually increases when measurement error is added to the confounder
+variable. Thus, in situarions where variables interact (e.g., when a
+confounder is present), more measurement error does not necessarily
+result in a more biased estimate.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{report_files/figure-pdf/fig-simulation_res-1.pdf}}
+
+}
+
+\caption{\label{fig-simulation_res}}
+
+\end{figure}%
+
+\section{Conclusions}\label{conclusions}
+
+The goal of this report was to improve the replicability of the
+simulation study conducted by Boulesteix et al. (2020). The code
+provided in the original study was improved in terms of readability and
+efficiency. In addition, a reproducible environment was created using
+the \texttt{renv} package (Ushey \& Wickham, 2026).
+
+The results were similar to the results provided by Boulesteix et al.
+(2020) in substantive terms. Nevertheless, the exact estimates differed
+because the seed-setting was changed in the code. The original seed
+setting disturbed the randomness by repeating the seed-setting in the
+loop.
+
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-Boulesteix2020}
+Boulesteix, A.-L., Groenwold, R. H., Abrahamowicz, M., Binder, H.,
+Briel, M., Hornung, R., Morris, T. P., Rahnenführer, J., \& Sauerbrei,
+W. (2020). Introduction to statistical simulations in health research.
+\emph{BMJ Open}, \emph{10}(12).
+\url{https://doi.org/10.1136/bmjopen-2020-039921}
+
+\bibitem[\citeproctext]{ref-renv}
+Ushey, K., \& Wickham, H. (2026). \emph{Renv: Project environments}.
+\url{https://doi.org/10.32614/CRAN.package.renv}
+
+\end{CSLReferences}
+
+
+
+
+\end{document}
